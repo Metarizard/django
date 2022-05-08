@@ -283,6 +283,11 @@ Forms
   attributes help to identify widgets where its inputs should be grouped in a
   ``<fieldset>`` with a ``<legend>``.
 
+* The argument ``error_messages`` for
+  :class:`~django.forms.formsets.BaseFormSet` adds support for
+  the keys ``'too_many_forms'`` and ``'too_few_forms'`` to customize error
+  messages when dealing with formsets.
+
 Generic Views
 ~~~~~~~~~~~~~
 

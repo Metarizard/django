@@ -446,17 +446,18 @@ class FormsFormsetTestCase(SimpleTestCase):
             auto_id=False,
             prefix="choices",
             error_messages={
-                "too_many_forms": "Number of forms should be less than %(num)d."
+                "too_many_forms": "Number of submitted forms should be at most %(num)d."
             },
         )
         self.assertFalse(formset.is_valid())
         self.assertEqual(
-            formset.non_form_errors(), ["Number of forms should be less than 1."]
+            formset.non_form_errors(),
+            ["Number of submitted forms should be at most 1."],
         )
         self.assertEqual(
             str(formset.non_form_errors()),
             '<ul class="errorlist nonform"><li>'
-            'Number of forms should be less than 1.</li></ul>',
+            "Number of submitted forms should be at most 1.</li></ul>",
         )
 
     def test_formset_validate_min_flag(self):
@@ -508,8 +509,7 @@ class FormsFormsetTestCase(SimpleTestCase):
         self.assertEqual(formset.non_form_errors(), ["customized"])
         self.assertEqual(
             str(formset.non_form_errors()),
-            '<ul class="errorlist nonform"><li>'
-            "customized</li></ul>",
+            '<ul class="errorlist nonform"><li>' "customized</li></ul>",
         )
 
     def test_formset_validate_min_flag_custom_formatted_error(self):
@@ -529,17 +529,18 @@ class FormsFormsetTestCase(SimpleTestCase):
             auto_id=False,
             prefix="choices",
             error_messages={
-                "too_few_forms": "Number of forms should be greater than %(num)d."
+                "too_few_forms": "Number of submitted forms should be at least %(num)d."
             },
         )
         self.assertFalse(formset.is_valid())
         self.assertEqual(
-            formset.non_form_errors(), ["Number of forms should be greater than 3."]
+            formset.non_form_errors(),
+            ["Number of submitted forms should be at least 3."],
         )
         self.assertEqual(
             str(formset.non_form_errors()),
             '<ul class="errorlist nonform"><li>'
-            "Number of forms should be greater than 3.</li></ul>",
+            "Number of submitted forms should be at least 3.</li></ul>",
         )
 
     def test_formset_validate_min_unchanged_forms(self):

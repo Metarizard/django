@@ -287,6 +287,8 @@ sure you understand what they do before doing so.
 a form instance with a prefix of ``__prefix__`` for easier use in dynamic
 forms with JavaScript.
 
+.. _error_messages:
+
 ``error_messages``
 ------------------
 
@@ -419,6 +421,33 @@ excessive.
     to protect against memory exhaustion attacks using forged POST requests.
     See :ref:`formsets-absolute-max`.
 
+The error message can be overridden by passing a dictionary with the
+key ``'too_many_forms'`` to the :ref:`error_messages` argument. A formatted
+string may be included with ``%(num)d`` as a reference to ``max_num``.
+For instance, to customize the message in the previous example:
+
+    >>> from django.forms import formset_factory
+    >>> from myapp.forms import ArticleForm
+    >>> ArticleFormSet = formset_factory(ArticleForm, max_num=1, validate_max=True)
+    >>> data = {
+    ...     'form-TOTAL_FORMS': '2',
+    ...     'form-INITIAL_FORMS': '0',
+    ...     'form-0-title': 'Test',
+    ...     'form-0-pub_date': '1904-06-16',
+    ...     'form-1-title': 'Test 2',
+    ...     'form-1-pub_date': '1912-06-23',
+    ... }
+    >>> custom_error_messages = {
+    ...     'too_many_forms': 'Number of submitted forms should be at most %(num)d.'
+    ... }
+    >>> formset = ArticleFormSet(data, error_messages=custom_error_messages)
+    >>> formset.is_valid()
+    False
+    >>> formset.errors
+    [{}, {}]
+    >>> formset.non_form_errors()
+    ['Number of submitted forms should be at most 1.']
+
 ``validate_min``
 ----------------
 
@@ -450,6 +479,33 @@ deletion, is greater than or equal to ``min_num``.
 
     Regardless of ``validate_min``, if a formset contains no data, then
     ``extra + min_num`` empty forms will be displayed.
+
+The error message can be overridden by passing a dictionary with the
+key ``'too_few_forms'`` to the :ref:`error_messages` argument. A formatted
+string may be included with ``%(num)d`` as a reference to ``min_num``.
+For instance, to customize the message in the previous example:
+
+    >>> from django.forms import formset_factory
+    >>> from myapp.forms import ArticleForm
+    >>> ArticleFormSet = formset_factory(ArticleForm, min_num=3, validate_min=True)
+    >>> data = {
+    ...     'form-TOTAL_FORMS': '2',
+    ...     'form-INITIAL_FORMS': '0',
+    ...     'form-0-title': 'Test',
+    ...     'form-0-pub_date': '1904-06-16',
+    ...     'form-1-title': 'Test 2',
+    ...     'form-1-pub_date': '1912-06-23',
+    ... }
+    >>> custom_error_messages = {
+    ...     'too_few_forms': 'Number of submitted forms should be at least %(num)d.'
+    ... }
+    >>> formset = ArticleFormSet(data, error_messages=custom_error_messages)
+    >>> formset.is_valid()
+    False
+    >>> formset.errors
+    [{}, {}]
+    >>> formset.non_form_errors()
+    ['Number of submitted forms should be at least 3.']
 
 Dealing with ordering and deletion of forms
 ===========================================
